@@ -1,0 +1,1 @@
+{"name":"reactnext","version":"1.0.0","description":"","main":"index.js","scripts":{"dev":"next","build":"next build","start":"next start"},"author":"","license":"ISC","dependencies":{"express":"^4.17.1","isomorphic-unfetch":"^3.0.0","mysqli":"^3.0.6","next":"^9.0.3","react":"^16.9.0","react-dom":"^16.9.0"},"readme":"ERROR: No README data found!","_id":"reactnext@1.0.0"}
