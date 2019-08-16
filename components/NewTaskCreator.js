@@ -1,8 +1,8 @@
 import React from 'react'
 
-const NewTaskCreator = () => {
+const NewTaskCreator = props => {
     return (
-        <a href="#" className="trello__add">
+        <a href="#" className="trello__add" onMouseDown={props.newTask}>
             <span>Dodaj kolejną kartę</span>
 
             <style jsx>{`
@@ -12,6 +12,7 @@ const NewTaskCreator = () => {
                     position: relative;
                     padding-left: 28px;
                     text-decoration: none;
+                    z-index: 999;
                 }
                 .trello__add:hover {
                     color: #172b4d;

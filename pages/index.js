@@ -42,7 +42,7 @@ class Index  extends React.Component {
             let newTaskIds = Array.from(start.tasksIds);
             newTaskIds.splice(source.index, 1);
             newTaskIds.splice(destination.index, 0, draggableId)
-            console.log(newTaskIds)
+          
             const newColumn = {
             ...start, 
             tasksIds: newTaskIds
@@ -85,11 +85,17 @@ class Index  extends React.Component {
         this.setState(newState);
     }
 
+    handleClickNewTask = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+    }
+
     render() {
         const data = this.state.columnOrder.map((colId, index) => {
             const column = this.state.columns[colId];
             const tasks = column.tasksIds.map(taskId => this.state.tasks[taskId]);
-            return <ColumnList key={column.id} column={column} tasks={tasks} index={index} />
+            return <ColumnList key={column.id} column={column} tasks={tasks} index={index} newTask={this.handleClickNewTask} />
         })
         resetServerContext()
         return (
@@ -97,7 +103,7 @@ class Index  extends React.Component {
                 onDragEnd={this.onDragEnd}
             >
                 <Droppable 
-                    droppableId="aa--columns" 
+                    droppableId="all-columns" 
                     direction="horizontal" 
                     type="column"
                 >

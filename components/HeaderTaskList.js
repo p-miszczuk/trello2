@@ -9,7 +9,7 @@ const HeaderTaskList = props => (
             .trello__header {
                 display: flex;
                 justify-content: space-between;
-                padding: 10px 0px;
+                padding: 10px 8px;
                 width: 100%;
             }
             .trello__header-title {

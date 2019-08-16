@@ -6,12 +6,9 @@ import { Droppable, Draggable } from 'react-beautiful-dnd'
 
 const ColumnList = props=> {
 
-   const getItemStyle = (style) => {
-       console.log(style)
-   }
     return (
         <Draggable draggableId={props.column.id} index={props.index}>
-           {(provided) => (
+           {(provided, snapshot) => (
                 <div className='trello__wrapper'
                     {...provided.draggableProps}
                     ref={provided.innerRef}
@@ -21,18 +18,17 @@ const ColumnList = props=> {
                 >
                     <HeaderTaskList title={props.column.title}/>
                     <Droppable droppableId={props.column.id} type="task">
-                        {(provided, snapshot) => (
+                        {(provided) => (
                             <div className="trello__list-tasks"
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
-                               
                             >
-                            {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index} placeholder={provided.placeholder}/>)}
+                            {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index}/>)}
                             {provided.placeholder}
                             </div>
                         )}
                     </Droppable>
-                    <NewTaskCreator />
+                    <NewTaskCreator newTask={props.newTask} />
                 </div>
     
                 <style jsx>{`
@@ -51,8 +47,8 @@ const ColumnList = props=> {
                         flex-direction: column;
                         max-height: 100%;
                         position: relative;
-                        padding: 0px 8px;
                         cursor: pointer;
+                        ${snapshot.isDragging ? 'transform: rotate(5deg);' : ''};
                     }
                     .trello__list-tasks {
                         display: block;
@@ -61,6 +57,8 @@ const ColumnList = props=> {
                         overflow-x: hidden;
                         word-wrap: break-word;
                         min-height: 7px;
+                        padding: 0 8px;
+                        overflow-y: hidden;
                     }
                 `}</style>
             </div>
