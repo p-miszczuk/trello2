@@ -3,10 +3,33 @@ import ColumnList from '../components/ColumnList'
 
 class Index  extends React.Component {
     
+    state = {
+        taskList: [
+            {
+                taskTitle: 'Tasks list 1',
+                tasks: [     
+                    {id: 1, task: 'Task 1'},
+                    {id: 2, task: 'Task 2'},
+                    {id: 3, task: 'Task 3'}
+                ]
+            },
+            {
+                taskTitle: 'Tasks list 2',
+                tasks: [     
+                    {id: 1, task: 'Task 1'},
+                    {id: 2, task: 'Task 2'},
+                    {id: 3, task: 'Task 3'}
+                ]
+            }
+        ]
+    }
+
     render() {
         return (
             <div className="container">
-                <ColumnList />
+                {
+                    this.state.taskList.map((column) => <ColumnList key={column.taskTitle} tasks={column.tasks} taskListTitle={column.taskTitle}/>)
+                }
         
             <style global jsx>{`
                 * {
