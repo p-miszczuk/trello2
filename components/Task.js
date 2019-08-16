@@ -2,43 +2,44 @@ import React from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 
 const Task = props => {
-    const style = {
-        width: '50px',
-        height: '50px',
-        backgroundColor: 'red',
-        position: 'static',
-
-    }
     return (
         <Draggable draggableId={props.task.id} index={props.index}>
-            {(provided, snapshot) => (
+            {(provided) => (
                 <a href="" className="trello__task"
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                 >
-                <div className="trello__card-labels">
-                    <span className="trello__card-label"></span>
-                    <span className="trello__card-label"></span>
-                </div>
+                {
+                    (props.task.label1 || props.task.label2) && <div className="trello__card-labels">
+                        {props.task.label1 && <span className="trello__card-label trello__card-label--orange"></span>}
+                        {props.task.label2 && <span className="trello__card-label trello__card-label--violet"></span>}
+                    </div>
+                }
                 <span>{props.task.content}</span>
                 <img src="../static/images/pencil.png" className='trello__pencil' />
                 <span className="icon-pencil"></span>
                 <div className="trello__badges">
-                    <div className="trello__badge-checklist" title="Elementy listy zadań">
-                        <img src='../static/images/check.png' className="trello__icon-check" />
-                        <span className="trello__info-check"> 1/1 </span>
-                    </div>
-                    <div className="trello__badge-date" title="">
-                        <img src="../static/images/clock.png" className="trello__icon-clock" />
-                        <span className="trello__info-date">14 cze</span>
-                    </div>
-                    <div className="trello__badge-description" title="Ta karta ma opis.">
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                    </div>
+                    {
+                        props.task.checkList && <div className="trello__badge-checklist" title="Elementy listy zadań">
+                            <img src='../static/images/check.png' className="trello__icon-check" />
+                            <span className="trello__info-check"> {props.task.checkList} </span>
+                        </div>
+                    }
+                    {
+                        props.task.date && <div className="trello__badge-date" title="">
+                            <img src="../static/images/clock.png" className="trello__icon-clock" />
+                            <span className="trello__info-date">{props.task.date}</span>
+                        </div>
+                    }
+                    {
+                        props.task.desc && <div className="trello__badge-description" title="Ta karta ma opis.">
+                            <span />
+                            <span />
+                            <span />
+                            <span />
+                        </div>
+                    }
                 </div>
                 <style jsx>{`
                     .trello__task {
@@ -51,7 +52,7 @@ const Task = props => {
                         min-height: 20px;
                         position: relative;
                         text-decoration: none;
-                        z-index: 1;
+                        z-index: 999;
                         overflow: hidden;
                         padding: 6px 8px 2px;
                         color: black;
@@ -135,6 +136,9 @@ const Task = props => {
                         flex-direction: row;
                         overflow: auto;
                     }
+                    .trello__card-labels:hover span:after {
+                        background: rgba(0, 0, 0, 0.2);
+                    }
                     .trello__card-label {
                         display: block;
                         height: 8px;
@@ -144,13 +148,29 @@ const Task = props => {
                         border-radius: 8px;
                         position: relative;
                         z-index: 0;
-                        background-color: yellow;
+                    }
+                    .trello__card-label:after {
+                        content: "";                                  
+                        position: absolute;
+                        top: 0px;
+                        left: 0px;
+                        width: 40px;
+                        height: 8px;
+                        border-radius: 6px;
+                        z-index: 10;
+                    }
+                    .trello__card-label--orange {
+                        background: #ff9f1a;
+                    }
+                    .trello__card-label--violet {
+                        background: #c377e0;
                     }
                     .trello__badge-description {
                         display: flex;
                         flex-direction: column;
                         justify-content: space-around;
                         height: 13px;
+                        margin: 0px 3px;
                     }
                     .trello__badge-description span {
                         display: block;

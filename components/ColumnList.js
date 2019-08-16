@@ -48,7 +48,7 @@ const ColumnList = props=> {
                         max-height: 100%;
                         position: relative;
                         cursor: pointer;
-                        ${snapshot.isDragging ? 'transform: rotate(5deg);' : ''};
+                        ${snapshot.isDragging && 'transform: rotate(5deg);'};
                     }
                     .trello__list-tasks {
                         display: block;
