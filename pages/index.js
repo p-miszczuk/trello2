@@ -1,6 +1,6 @@
 import React from "react"
 import ColumnList from '../components/ColumnList'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { resetServerContext } from 'react-beautiful-dnd'
 import inicialData from '../static/data'
 
@@ -9,7 +9,7 @@ class Index  extends React.Component {
     state = inicialData;
 
     onDragEnd = result=> {
-        const { destination, source, draggableId } = result
+        const { destination, source, draggableId, type } = result
 
         if (!destination) {
             return
@@ -20,20 +20,21 @@ class Index  extends React.Component {
                 return
             }
 
-        // const column = this.state.tasksList.filter(column => column.taskTitle === source.droppableId);
-        // let newTasksList = column[0].tasks
-        // const task = column[0].tasks.filter(item => item.id === draggableId)
-        // newTasksList.splice(source.index, 1);
-        // newTasksList.splice(destination.index, 0, task[0])
+        if (type === 'column') {
+            const newColumnOrder = Array.from(this.state.columnOrder)
+            newColumnOrder.splice(source.index, 1)
+            newColumnOrder.splice(destination.index, 0, draggableId)
 
-        // const newTaskCol = {
-        //     taskTitle: column[0].taskTitle,
-        //     tasks: newTasksList
-        // }
+            const newState = {
+                ...this.state,
+                columnOrder: newColumnOrder
+            }
+           
+            this.setState(newState)
+            return
+        }
+        
 
-        // this.setState({
-        //     tasksList: [{...newTaskCol}]
-        // })        
         const start = this.state.columns[source.droppableId];
         const finish = this.state.columns[destination.droppableId];
         
@@ -85,50 +86,60 @@ class Index  extends React.Component {
     }
 
     render() {
-        const data = this.state.columnOrder.map(colId => {
+        const data = this.state.columnOrder.map((colId, index) => {
             const column = this.state.columns[colId];
             const tasks = column.tasksIds.map(taskId => this.state.tasks[taskId]);
-            return <ColumnList key={column.id} column={column} tasks={tasks} />
+            return <ColumnList key={column.id} column={column} tasks={tasks} index={index} />
         })
         resetServerContext()
         return (
             <DragDropContext
                 onDragEnd={this.onDragEnd}
             >
-                <div className="container">
-                    {
-                        data
-                    }
-            
-                <style global jsx>{`
-                    * {
-                        padding: 0px;
-                        margin: 0px;
-                        box-sizing: border-box;
-                    }
-                    body{
-                        background-color: #0079bf;
-                        font-size: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;                    ;
-                        font-family: $baseFontFamily;
-                        width: 100%;
-                    }
-                `}</style>
-                <style jsx>{`
-                    .container {
-                        display: inline-block;
-                        user-select: none;
-                        overflow-x: auto;
-                        overflow-y: hidden;
-                        padding: 30px 8px;
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        bottom: 0;
-                        left: 0;
-                        width: 100%;
-                    }
-                `}</style>
-            </div>
+                <Droppable 
+                    droppableId="aa--columns" 
+                    direction="horizontal" 
+                    type="column"
+                >
+                    {(provided) => (
+                        <div className="container"
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                        {data}
+                        {provided.placeholder}
+                        {console.log(provided.placeholder)}
+                        <style global jsx>{`
+                            * {
+                                padding: 0px;
+                                margin: 0px;
+                                box-sizing: border-box;
+                            }
+                            body{
+                                background-color: #0079bf;
+                                font-size: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;                    ;
+                                font-family: $baseFontFamily;
+                                width: 100%;
+                            }
+                        `}</style>
+                        <style jsx>{`
+                            .container {
+                                display: inline-block;
+                                user-select: none;
+                                overflow-x: auto;
+                                overflow-y: hidden;
+                                padding: 30px 8px;
+                                position: absolute;
+                                top: 0;
+                                right: 0;
+                                bottom: 0;
+                                left: 0;
+                                width: 100%;
+                            }
+                        `}</style>
+                        </div>
+                    )}
+            </Droppable>
         </DragDropContext>
         )
     }
