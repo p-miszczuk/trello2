@@ -2,6 +2,7 @@ import React from 'react'
 import Task from './Task'
 import NewTaskCreator from './NewTaskCreator'
 import HeaderTaskList from './HeaderTaskList'
+import { Droppable } from 'react-beautiful-dnd'
 
 const ColumnList = props=> {
     console.log(props)
@@ -10,11 +11,19 @@ const ColumnList = props=> {
             
             <div className='trello'>
                 <HeaderTaskList title={props.taskListTitle}/>
-                <div className="trello__list-tasks">
-                    <Task task="Task 1"/>
-                    <Task task="Task 2"/>
-                    <Task task="Task 3"/>
-                </div>
+                <Droppable droppableId={props.taskListTitle} >
+                    {(provided) => (
+                        <div className="trello__list-tasks"
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                        >
+                        {
+                            props.tasks.map((task, index) => <Task key={task.id} index={index} id={task.id} taskItem={task.task} />)
+                        }
+                        {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
                 <NewTaskCreator />
             </div>
 
