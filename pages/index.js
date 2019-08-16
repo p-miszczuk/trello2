@@ -1,6 +1,7 @@
 import React from "react"
 import ColumnList from '../components/ColumnList'
 import { DragDropContext } from 'react-beautiful-dnd'
+import { resetServerContext } from 'react-beautiful-dnd'
 
 class Index  extends React.Component {
     
@@ -17,25 +18,27 @@ class Index  extends React.Component {
         ]
     }
 
-    handelDragEnd = result=> {
-        // const { destination, source, draggableId } = result
-        console.log("jest")
-        // if (!destination) {
-        //     return
-        // }
+    onDragEnd = result=> {
+        const { destination, source, draggableId } = result
 
-        // if (destination.droppableId === source.droppableId &&
-        //     destination.index === source.index) {
-        //         return
-        //     }
+        if (!destination) {
+            return
+        }
 
-        
+        if (destination.droppableId === source.droppableId &&
+            destination.index === source.index) {
+                return
+            }
+
+        const column = this.state.taskList.filter(column => column.taskTitle === source.droppableId);
+       
     }
 
     render() {
+        resetServerContext()
         return (
             <DragDropContext
-                onDragEnd={this.handleDragEnd}
+                onDragEnd={this.onDragEnd}
             >
                 <div className="container">
                     {
