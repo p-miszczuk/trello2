@@ -6,7 +6,7 @@ import { resetServerContext } from 'react-beautiful-dnd'
 class Index  extends React.Component {
     
     state = {
-        taskList: [
+        tasksList: [
             {
                 taskTitle: 'Tasks list 1',
                 tasks: [     
@@ -30,11 +30,24 @@ class Index  extends React.Component {
                 return
             }
 
-        const column = this.state.taskList.filter(column => column.taskTitle === source.droppableId);
-       
+        const column = this.state.tasksList.filter(column => column.taskTitle === source.droppableId);
+        let newTasksList = column[0].tasks
+        const task = column[0].tasks.filter(item => item.id === draggableId)
+        newTasksList.splice(source.index, 1);
+        newTasksList.splice(destination.index, 0, task[0])
+
+        const newTaskCol = {
+            taskTitle: column[0].taskTitle,
+            tasks: newTasksList
+        }
+
+        this.setState({
+            tasksList: [{...newTaskCol}]
+        })        
     }
 
     render() {
+        console.log(this.state.tasksList)
         resetServerContext()
         return (
             <DragDropContext
@@ -42,7 +55,7 @@ class Index  extends React.Component {
             >
                 <div className="container">
                     {
-                        this.state.taskList.map((column) => <ColumnList key={column.taskTitle} tasks={column.tasks} taskListTitle={column.taskTitle}/>)
+                        this.state.tasksList.map((column) => <ColumnList key={column.taskTitle} tasks={column.tasks} taskListTitle={column.taskTitle}/>)
                     }
             
                 <style global jsx>{`
