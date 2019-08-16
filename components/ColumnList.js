@@ -8,18 +8,15 @@ const ColumnList = props=> {
     console.log(props)
     return (
         <div className='trello__wrapper'>
-            
             <div className='trello'>
-                <HeaderTaskList title={props.taskListTitle}/>
-                <Droppable droppableId={props.taskListTitle} >
-                    {(provided) => (
+                <HeaderTaskList title={props.column.title}/>
+                <Droppable droppableId={props.column.id} >
+                    {(provided, snapshot) => (
                         <div className="trello__list-tasks"
                             ref={provided.innerRef}
                             {...provided.droppableProps}
                         >
-                        {
-                            props.tasks.map((task, index) => <Task key={task.id} index={index} id={task.id} taskItem={task.task} />)
-                        }
+                        {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index} />)}
                         {provided.placeholder}
                         </div>
                     )}
@@ -45,6 +42,14 @@ const ColumnList = props=> {
                     position: relative;
                     padding: 0px 8px;
                     cursor: pointer;
+                }
+                .trello__list-tasks {
+                    display: block;
+                    flex: 1 1 auto;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    word-wrap: break-word;
+                    min-height: 100px;
                 }
             `}</style>
         </div>

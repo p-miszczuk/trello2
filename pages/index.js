@@ -2,21 +2,11 @@ import React from "react"
 import ColumnList from '../components/ColumnList'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { resetServerContext } from 'react-beautiful-dnd'
+import inicialData from '../static/data'
 
 class Index  extends React.Component {
     
-    state = {
-        tasksList: [
-            {
-                taskTitle: 'Tasks list 1',
-                tasks: [     
-                    {id: 1, task: 'Task 1'},
-                    {id: 2, task: 'Task 2'},
-                    {id: 3, task: 'Task 3'}
-                ]
-            }
-        ]
-    }
+    state = inicialData;
 
     onDragEnd = result=> {
         const { destination, source, draggableId } = result
@@ -30,24 +20,76 @@ class Index  extends React.Component {
                 return
             }
 
-        const column = this.state.tasksList.filter(column => column.taskTitle === source.droppableId);
-        let newTasksList = column[0].tasks
-        const task = column[0].tasks.filter(item => item.id === draggableId)
-        newTasksList.splice(source.index, 1);
-        newTasksList.splice(destination.index, 0, task[0])
+        // const column = this.state.tasksList.filter(column => column.taskTitle === source.droppableId);
+        // let newTasksList = column[0].tasks
+        // const task = column[0].tasks.filter(item => item.id === draggableId)
+        // newTasksList.splice(source.index, 1);
+        // newTasksList.splice(destination.index, 0, task[0])
 
-        const newTaskCol = {
-            taskTitle: column[0].taskTitle,
-            tasks: newTasksList
+        // const newTaskCol = {
+        //     taskTitle: column[0].taskTitle,
+        //     tasks: newTasksList
+        // }
+
+        // this.setState({
+        //     tasksList: [{...newTaskCol}]
+        // })        
+        const start = this.state.columns[source.droppableId];
+        const finish = this.state.columns[destination.droppableId];
+        
+        if (start === finish) {
+            let newTaskIds = Array.from(start.tasksIds);
+            newTaskIds.splice(source.index, 1);
+            newTaskIds.splice(destination.index, 0, draggableId)
+            console.log(newTaskIds)
+            const newColumn = {
+            ...start, 
+            tasksIds: newTaskIds
+            }
+
+            const newState = {
+            ...this.state,
+            columns: {
+                ...this.state.columns,
+                [newColumn.id]: newColumn
+            }
+            }
+
+            this.setState(newState);
+            return
         }
 
-        this.setState({
-            tasksList: [{...newTaskCol}]
-        })        
+        const startTaskIds = Array.from(start.tasksIds);
+        startTaskIds.splice(source.index, 1);
+        const newStart = {
+          ...start,
+          tasksIds: startTaskIds,
+        };
+    
+        const finishTaskIds = Array.from(finish.tasksIds);
+        finishTaskIds.splice(destination.index, 0, draggableId);
+        const newFinish = {
+          ...finish,
+          tasksIds: finishTaskIds,
+        };
+    
+        const newState = {
+          ...this.state,
+          columns: {
+            ...this.state.columns,
+            [newStart.id]: newStart,
+            [newFinish.id]: newFinish,
+          },
+        };
+        this.setState(newState);
     }
 
     render() {
-        console.log(this.state.tasksList)
+        const data = this.state.columnOrder.map(colId => {
+            const column = this.state.columns[colId];
+            const tasks = column.tasksIds.map(taskId => this.state.tasks[taskId]);
+            return <ColumnList key={column.id} column={column} tasks={tasks} />
+        })
         resetServerContext()
         return (
             <DragDropContext
@@ -55,7 +97,7 @@ class Index  extends React.Component {
             >
                 <div className="container">
                     {
-                        this.state.tasksList.map((column) => <ColumnList key={column.taskTitle} tasks={column.tasks} taskListTitle={column.taskTitle}/>)
+                        data
                     }
             
                 <style global jsx>{`
