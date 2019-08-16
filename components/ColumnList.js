@@ -5,6 +5,10 @@ import HeaderTaskList from './HeaderTaskList'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 
 const ColumnList = props=> {
+
+   const getItemStyle = (style) => {
+       console.log(style)
+   }
     return (
         <Draggable draggableId={props.column.id} index={props.index}>
            {(provided) => (
@@ -21,8 +25,9 @@ const ColumnList = props=> {
                             <div className="trello__list-tasks"
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
+                               
                             >
-                            {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index} />)}
+                            {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index} placeholder={provided.placeholder}/>)}
                             {provided.placeholder}
                             </div>
                         )}

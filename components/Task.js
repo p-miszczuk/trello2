@@ -2,16 +2,17 @@ import React from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 
 const Task = props => {
+    
     return (
         <Draggable draggableId={props.task.id} index={props.index}>
-            {(provided) => (
+            {(provided, snapshot) => (
                 <a href="#" className="trello__task"
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                 >
                 {props.task.content}
-                
+                {console.log(provided.draggableProps.style)}
                 <style jsx>{`
                     .trello__task {
                         background-color: #fff;

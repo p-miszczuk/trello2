@@ -108,7 +108,6 @@ class Index  extends React.Component {
                         >
                         {data}
                         {provided.placeholder}
-                        {console.log(provided.placeholder)}
                         <style global jsx>{`
                             * {
                                 padding: 0px;
