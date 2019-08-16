@@ -88,7 +88,6 @@ class Index  extends React.Component {
     handleClickNewTask = e => {
         e.preventDefault();
         e.stopPropagation();
-        
     }
 
     render() {

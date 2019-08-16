@@ -38,7 +38,7 @@ const NewTaskCreator = props => {
                     overflow-x: hidden;
                     word-wrap: break-word;
                     padding: 0 8px;
-                    min-height: 0;
+                    min-height: 10px;
                 }
             `}</style>
         </a>
