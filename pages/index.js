@@ -85,16 +85,35 @@ class Index  extends React.Component {
         this.setState(newState);
     }
 
-    handleClickNewTask = e => {
+    handleClickNewTask = (e, idCol) => {
         e.preventDefault();
         e.stopPropagation();
+
+        console.log(Math.random()<0.4)
+
+        const ids = Object.entries(this.state.tasks)
+        const lastTask = ids[ids.length-1][0]
+        const idNumber = Number(lastTask.substr(4,lastTask.length))
+        
+        let setNewTaskId = `task${idNumber+1}`
+        const newTask = {[setNewTaskId]: {id: setNewTaskId, content: setNewTaskId, checkList: "1/2", date:  Math.random()<0.5 ? "12 sier" : false, label1: Math.random()<0.5 ? true : false, label2: Math.random()<0.4 ? true : false, desc: Math.random()<0.4 ? true : false}}
+       
+        const columns = this.state.columns[idCol]
+           
+        this.setState({
+            tasks: {...this.state.tasks, ...newTask},
+            columns: {
+                ...this.state.columns,
+                ...columns.tasksIds.push(setNewTaskId)
+            }
+        })
     }
 
     render() {
         const data = this.state.columnOrder.map((colId, index) => {
             const column = this.state.columns[colId];
             const tasks = column.tasksIds.map(taskId => this.state.tasks[taskId]);
-            return <ColumnList key={column.id} column={column} tasks={tasks} index={index} newTask={this.handleClickNewTask} />
+            return <ColumnList key={column.id} column={column} tasks={tasks} index={index} newTask={(e,idCol) => this.handleClickNewTask(e,idCol)} />
         })
         resetServerContext()
         return (

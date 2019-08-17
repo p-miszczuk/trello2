@@ -28,7 +28,7 @@ const ColumnList = props=> {
                             </div>
                         )}
                     </Droppable>
-                    <NewTaskCreator newTask={props.newTask} />
+                    <NewTaskCreator newTask={(e,idCol) => props.newTask(e,idCol)} idCol={props.column.id} />
                 </div>
     
                 <style jsx>{`
@@ -48,17 +48,16 @@ const ColumnList = props=> {
                         max-height: 100%;
                         position: relative;
                         cursor: pointer;
+                        overflow-y: hidden;
                         ${snapshot.isDragging && 'transform: rotate(5deg);'};
                     }
                     .trello__list-tasks {
                         display: block;
                         flex: 1 1 auto;
-                        overflow-y: auto;
-                        overflow-x: hidden;
+                        overflow: hidden;
                         word-wrap: break-word;
-                        min-height: 7px;
+                        min-height: 10px;
                         padding: 0 8px;
-                        overflow-y: hidden;
                     }
                 `}</style>
             </div>

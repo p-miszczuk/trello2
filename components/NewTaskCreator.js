@@ -2,7 +2,7 @@ import React from 'react'
 
 const NewTaskCreator = props => {
     return (
-        <a href="#" className="trello__add" onMouseDown={props.newTask}>
+        <a href="#" className="trello__add" onMouseDown={(e) => props.newTask(e,props.idCol)}>
             <span>Dodaj kolejną kartę</span>
 
             <style jsx>{`
