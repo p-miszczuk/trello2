@@ -52,7 +52,6 @@ const ColumnList = props => {
                     overflow: hidden;
                     word-wrap: break-word;
                     min-height: 10px;
-                    border: 1px solid red;
                     padding: 0 8px;
                 }
             `}</style>

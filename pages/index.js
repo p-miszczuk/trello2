@@ -81,7 +81,7 @@ class Index  extends React.Component {
         if (ev.preventDefault) {
             ev.preventDefault()
         }
-        console.log("jest")
+    
         const { idOfCol, idOfTask, oldCol, type } = this.state
 
         if (type === 'task') {
@@ -167,6 +167,24 @@ class Index  extends React.Component {
             
             if (isTaskList === 0) {
                 
+                let oldColumn = this.state.columns.find(item => item.id === this.state.idOfCol)
+                const task = oldColumn.tasksIds.findIndex(item => item === this.state.idOfTask)
+                oldColumn.tasksIds.splice(task,1)
+                
+                const newTaskList = {
+                   id: column.id,
+                   title: column.title,
+                   tasksIds: [this.state.idOfTask]
+                } 
+                
+                this.setState({
+                   columns: this.state.columns.map(item => {
+                       if (item.id === column.id) return newTaskList
+                       return item
+                   }),
+                   oldCol: this.state.idOfCol,
+                   idOfCol: idCol
+                })
             }
         }
     }
@@ -199,7 +217,6 @@ class Index  extends React.Component {
                     dragTaskEnd={() => this.dragTaskEnd()}
                     newTask={(e,idCol) => this.handleClickNewTask(e,idCol)} />
         })
-        // console.log(this.state.columnOrder)
         return (
             <div className="container">
                 {data}
