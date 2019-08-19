@@ -14,27 +14,26 @@ class Index  extends React.Component {
         e.preventDefault();
         e.stopPropagation();
 
-        const ids = Object.entries(this.state.tasks)
-        const lastTask = ids[ids.length-1][0]
-        const idNumber = Number(lastTask.substr(4,lastTask.length))
+        // const ids = Object.entries(this.state.tasks)
+        // const lastTask = ids[ids.length-1][0]
+        // const idNumber = Number(lastTask.substr(4,lastTask.length))
         
-        let setNewTaskId = `task${idNumber+1}`
-        const newTask = {[setNewTaskId]: {id: setNewTaskId, content: setNewTaskId, checkList: "1/2", date:  Math.random()<0.5 ? "12 sier" : false, label1: Math.random()<0.5 ? true : false, label2: Math.random()<0.4 ? true : false, desc: Math.random()<0.4 ? true : false}}
+        // let setNewTaskId = `task${idNumber+1}`
+        // const newTask = {[setNewTaskId]: {id: setNewTaskId, content: setNewTaskId, checkList: "1/2", date:  Math.random()<0.5 ? "12 sier" : false, label1: Math.random()<0.5 ? true : false, label2: Math.random()<0.4 ? true : false, desc: Math.random()<0.4 ? true : false}}
        
-        const columns = this.state.columns[idCol]
+        // const columns = this.state.columns[idCol]
         
-        this.setState({
-            tasks: {...this.state.tasks, ...newTask},
-            columns: {
-                ...this.state.columns,
-                ...columns.tasksIds.push(setNewTaskId)
-            }
-        })
+        // this.setState({
+        //     tasks: {...this.state.tasks, ...newTask},
+        //     columns: {
+        //         ...this.state.columns,
+        //         ...columns.tasksIds.push(setNewTaskId)
+        //     }
+        // })
     }
 
     onDragStart = col => e => {
         
-       
             if (e.target.className.includes("trello__wrapper")) {
             e.target.style.opacity = '1'
             this.idOfCol = col;
@@ -129,12 +128,21 @@ class Index  extends React.Component {
 
     render() {
         const data = this.state.columnOrder.map((colId, index) => {
-            const column = this.state.columns[colId];
-            const tasks = column.tasksIds.map(taskId => this.state.tasks[taskId]);
+            let taskArr = [];
+            const column = this.state.columns[index];
+            const tasks = this.state.tasks;
+            column.tasksIds.forEach((item) => {  
+                tasks.forEach((id) => {
+                    if (item === id.id && column.id === colId) {
+                       taskArr.push(id)
+                    }
+                })
+            })
+           
             return <ColumnList 
-                    key={column.id} 
+                    key={index} 
                     column={column} 
-                    tasks={tasks} 
+                    tasks={taskArr} 
                     index={index}
                     onDragStart={(col) => this.onDragStart(col)}
                     onDragEnter={(col) => this.onDragEnter(col)}
@@ -144,7 +152,7 @@ class Index  extends React.Component {
                     dragTaskEnd={() => this.dragTaskEnd()}
                     newTask={(e,idCol) => this.handleClickNewTask(e,idCol)} />
         })
-    
+     
         return (
             <div className="container">
                 {data}
@@ -185,7 +193,7 @@ class Index  extends React.Component {
                         width: 100%;
                     }
                 `}</style>
-                {/* <div id='clone'>ad</div> */}
+               
             </div>
         )
     }
