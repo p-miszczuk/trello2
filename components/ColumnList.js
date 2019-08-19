@@ -2,67 +2,52 @@ import React from 'react'
 import Task from './Task'
 import NewTaskCreator from './NewTaskCreator'
 import HeaderTaskList from './HeaderTaskList'
-import { Droppable, Draggable } from 'react-beautiful-dnd'
 
-const ColumnList = props=> {
-
-    return (
-        <Draggable draggableId={props.column.id} index={props.index}>
-           {(provided, snapshot) => (
-                <div className='trello__wrapper'
-                    {...provided.draggableProps}
-                    ref={provided.innerRef}
-                >
-                <div className='trello' 
-                    {...provided.dragHandleProps}
-                >
-                    <HeaderTaskList title={props.column.title}/>
-                    <Droppable droppableId={props.column.id} type="task">
-                        {(provided) => (
-                            <div className="trello__list-tasks"
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                            >
-                            {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index}/>)}
-                            {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                    <NewTaskCreator newTask={(e,idCol) => props.newTask(e,idCol)} idCol={props.column.id} />
+const ColumnList = props => {
+    return (    
+        <div className='trello__wrapper'
+             draggable='true'
+             onDragStart={(e) => props.onDragStart(e,props.column.id)}
+             onDragEnter={(e) => props.onDragEnter(e,props.column.id)}
+             onDragEnd={props.dragEnd}
+        >
+            <div className='trello'>
+                <HeaderTaskList title={props.column.title} />
+                <div className="trello__list-tasks">
+                    {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index}/>)}
                 </div>
-    
-                <style jsx>{`
-                    .trello__wrapper {
-                        width: 272px;
-                        margin: 0 4px;
-                        height: 100%;
-                        box-sizing: border-box;
-                        display: inline-block;
-                        vertical-align: top;
-                    }
-                    .trello {
-                        background-color: #dfe1e6;
-                        border-radius: 4px;
-                        display: flex;
-                        flex-direction: column;
-                        max-height: 100%;
-                        position: relative;
-                        cursor: pointer;
-                        overflow-y: hidden;
-                        ${snapshot.isDragging && 'transform: rotate(5deg);'};
-                    }
-                    .trello__list-tasks {
-                        display: block;
-                        flex: 1 1 auto;
-                        overflow: hidden;
-                        word-wrap: break-word;
-                        min-height: 10px;
-                        padding: 0 8px;
-                    }
-                `}</style>
+                <NewTaskCreator idCol={props.column.id} newTask={(e,idCol) => props.newTask(e, idCol)} />
             </div>
-           )}
-        </Draggable>
+            <style jsx>{`
+                .trello__wrapper {
+                    width: 272px;
+                    margin: 0 4px;
+                    height: 100%;
+                    box-sizing: border-box;
+                    display: inline-block;
+                    vertical-align: top;
+                    position: relative;
+                }
+                .trello {
+                    background-color: #dfe1e6;
+                    border-radius: 4px;
+                    display: flex;
+                    flex-direction: column;
+                    max-height: 100%;
+                    position: relative;
+                    cursor: pointer;
+                    overflow-y: hidden;
+                }
+                .trello__list-tasks {
+                    display: block;
+                    flex: 1 1 auto;
+                    overflow: hidden;
+                    word-wrap: break-word;
+                    min-height: 1px;
+                    padding: 0 8px;
+                }
+            `}</style>
+        </div>
     )
 }
 
