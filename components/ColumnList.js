@@ -13,7 +13,7 @@ const ColumnList = props => {
         >
             <div className='trello'>
                 <HeaderTaskList title={props.column.title} />
-                <div className="trello__list-tasks">
+                <div className="trello__list-tasks" onDragEnter={props.dragEmptyListEnter(props.column.id)}>
                     { 
                         props.tasks.map((task) => <Task 
                         key={task.id} 
@@ -51,7 +51,8 @@ const ColumnList = props => {
                     flex: 1 1 auto;
                     overflow: hidden;
                     word-wrap: break-word;
-                    min-height: 1px;
+                    min-height: 10px;
+                    border: 1px solid red;
                     padding: 0 8px;
                 }
             `}</style>

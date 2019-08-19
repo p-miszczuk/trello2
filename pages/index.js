@@ -5,11 +5,6 @@ import inicialData from '../static/data'
 class Index  extends React.Component {
     
     state = inicialData;
-
-    idOfCol = null;
-    idOfTask = null;
-    oldCol = null;
-    newCol = null;
    
     handleClickNewTask = (e, idCol) => {
         e.preventDefault();
@@ -37,16 +32,10 @@ class Index  extends React.Component {
             
             if (e.target.className.includes("trello__wrapper")) {
             e.target.style.opacity = '1'
-            this.idOfCol = col;
-            // this.clone = document.getElementById('clone')
-            // this.clone.innerHTML = e.currentTarget.innerHTML;
-            // this.clone.style.height = e.target.firstChild.offsetHeight + "px";
-            // this.clone.style.top = e.target.offsetTop+'px'
-            // this.clone.style.left = e.target.offsetLeft+'px'
-            // const a = e.target
-            // console.log({a})
-            console.log("drag column")
-            // e.dataTransfer.setData("text/plain", e.target.innerText);
+            this.setState({
+                idOfCol: col,
+                type: 'column'
+            })
         }
     } 
 
@@ -55,14 +44,16 @@ class Index  extends React.Component {
             e.preventDefault()
         }
 
-        if (this.idOfCol !== col && (e.target.className.includes('header') || e.target.className.includes('trello__wrapper'))) {
-            let cloneColumnsOrder = this.state.columnOrder
+        const { idOfCol, columnOrder, type } = this.state
 
-            const oldPlace = cloneColumnsOrder.findIndex(item => item === this.idOfCol);
+        if (type === 'column') {
+            let cloneColumnsOrder = columnOrder
+
+            const oldPlace = cloneColumnsOrder.findIndex(item => item === idOfCol);
             const newPlace = cloneColumnsOrder.findIndex(item => item === col);
            
             cloneColumnsOrder.splice(oldPlace,1)
-            cloneColumnsOrder.splice(newPlace, 0, this.idOfCol)
+            cloneColumnsOrder.splice(newPlace, 0, idOfCol)
             
             this.setState({
                 columnOrder: cloneColumnsOrder
@@ -77,8 +68,11 @@ class Index  extends React.Component {
     dragTaskStart = (idCol,idTask) => ev => {
        
         if (ev.target.className.includes('trello__task')) {
-            this.idOfTask = idTask;
-            this.idOfCol = idCol;
+            this.setState({
+                idOfTask: idTask,
+                idOfCol: idCol,
+                type: 'task'
+            })
             ev.dataTransfer.setData("text/plain", ev.target.innerText);
         } 
     }
@@ -87,17 +81,22 @@ class Index  extends React.Component {
         if (ev.preventDefault) {
             ev.preventDefault()
         }
+        console.log("jest")
+        const { idOfCol, idOfTask, oldCol, type } = this.state
 
-        if (this.idOfCol === idCol) {
-            if (this.idOfTask !== idTask && this.oldCol !== idCol) {
-                const column = this.state.columns.find(col => col.id === idCol)
-
-                if (column.tasksIds.length > 0) {
-                    const oldPlace = column.tasksIds.findIndex(item => item === this.idOfTask)
+        if (type === 'task') {
+          
+            if (idOfCol === idCol) {
+      
+                if (idOfTask !== idTask && oldCol !== idCol) {
+                    
+                    const column = this.state.columns.find(col => col.id === idCol)
+    
+                    const oldPlace = column.tasksIds.findIndex(item => item === idOfTask)
                     const newPlace = column.tasksIds.findIndex(item => item === idTask)
-                   
+                    
                     column.tasksIds.splice(oldPlace, 1)
-                    column.tasksIds.splice(newPlace, 0, this.idOfTask)
+                    column.tasksIds.splice(newPlace, 0, idOfTask)
         
                     const newTaskList = {
                         id: column.id,
@@ -110,54 +109,66 @@ class Index  extends React.Component {
                     })
                     
                     return
+    
                 }
-            }
-        } else if (this.idOfCol !== idCol) {
-                
-                let column = this.state.columns.find(item => item.id === idCol);
-                const taskItem = column.tasksIds.some(item => item === this.idOfTask);
-                
-                if (!taskItem) {
-                    this.oldCol = this.idOfCol
-                    this.newCol = idCol
-                    const newTask = column.tasksIds.findIndex(item => item === idTask)
-                    column.tasksIds.splice(newTask, 0, this.idOfTask)
-                    
-                    let oldColumn = this.state.columns.find(item => item.id === this.idOfCol)
-                    const oldTask = oldColumn.tasksIds.findIndex(item => item === this.idOfTask)
+            } else if (idOfCol !== idCol) {
                    
-                    oldColumn.tasksIds.splice(oldTask,1)
-
-                    const newTaskList = {
-                        id: column.id,
-                        title: column.title,
-                        tasksIds: column.tasksIds
-                    }
-
-                    const oldTaskList = {
-                        id: oldColumn.id,
-                        title: oldColumn.title,
-                        tasksIds: oldColumn.tasksIds
-                    } 
-
-                    this.setState({
-                        columns: this.state.columns.map(item => {
-                            if (item.id === column.id) return newTaskList
-                            else if (item.id === oldColumn.id) return oldTaskList
-                            return item
+                    let column = this.state.columns.find(item => item.id === idCol);
+                    const taskItem = column.tasksIds.some(item => item === idOfTask);
+                    
+                    if (!taskItem) {
+                        
+                        const newTask = column.tasksIds.findIndex(item => item === idTask)
+                        column.tasksIds.splice(newTask, 0, idOfTask)
+                        
+                        let oldColumn = this.state.columns.find(item => item.id === idOfCol)
+                        const oldTask = oldColumn.tasksIds.findIndex(item => item === idOfTask)
+                       
+                        oldColumn.tasksIds.splice(oldTask,1)
+    
+                        const newTaskList = {
+                            id: column.id,
+                            title: column.title,
+                            tasksIds: column.tasksIds
+                        }
+    
+                        const oldTaskList = {
+                            id: oldColumn.id,
+                            title: oldColumn.title,
+                            tasksIds: oldColumn.tasksIds
+                        } 
+    
+                        this.setState({
+                            columns: this.state.columns.map(item => {
+                                if (item.id === column.id) return newTaskList
+                                else if (item.id === oldColumn.id) return oldTaskList
+                                return item
+                            }),
+                            oldCol: idOfCol,
+                            idOfCol: idCol
                         })
-                    })
-                }
-
-                this.idOfCol = idCol
+                    }
             }
+        }
 
         return false
     }
 
     dragTaskEnd = (ev) => {
-        this.oldCol=null;
-        this.newCol=null;
+        this.setState({
+            oldCol: null
+        })
+    }
+
+    dragEmptyListEnter = idCol => e => {
+        if (this.state.type === 'task') {
+            const column = this.state.columns.find(item => item.id === idCol)
+            const isTaskList = column.tasksIds.length;
+            
+            if (isTaskList === 0) {
+                
+            }
+        }
     }
 
     render() {
@@ -181,6 +192,7 @@ class Index  extends React.Component {
                     index={index}
                     onDragStart={(col) => this.onDragStart(col)}
                     onDragEnter={(col) => this.onDragEnter(col)}
+                    dragEmptyListEnter={(idCol) => this.dragEmptyListEnter(idCol)}
                     dragEnd={this.dragEnd}
                     dragTaskStart={(idColumn,idTask) => this.dragTaskStart(idColumn,idTask)} 
                     dragTaskEnter={(idColumn,idTask) => this.dragTaskEnter(idColumn,idTask)}
