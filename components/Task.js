@@ -4,9 +4,9 @@ const Task = props => {
     return (
         <div 
             className='trello__task-wrapper'
-            onDragStart={() => props.dragTaskStart()}
-            onDragEnter={() => props.dragTaskEnter()}
-            onDragEnd={() => props.dragTaskEnd()}
+            onDragStart={(e) => props.dragTaskStart(e,props.idColumn,props.task.id)}
+            onDragEnter={(e) => props.dragTaskEnter(e,props.idColumn,props.task.id)}
+            onDragEnd={(e) => props.dragTaskEnd(e)}
             draggable='true'
         >
             <a href="" className="trello__task">

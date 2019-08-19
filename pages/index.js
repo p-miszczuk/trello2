@@ -7,6 +7,7 @@ class Index  extends React.Component {
     state = inicialData;
 
     idOfCol = null;
+    idOfTask = null;
     clone = null;
    
     handleClickNewTask = (e, idCol) => {
@@ -32,7 +33,8 @@ class Index  extends React.Component {
     }
 
     onDragStart = (e,col) => {
-        // if(e.target.className === 'trello__wrapper') {
+        
+       
             if (e.target.className.includes("trello__wrapper")) {
             e.target.style.opacity = '1'
             this.idOfCol = col;
@@ -44,7 +46,7 @@ class Index  extends React.Component {
             // const a = e.target
             // console.log({a})
             console.log("drag column")
-            e.dataTransfer.setData("text/plain", e.target.innerText);
+            // e.dataTransfer.setData("text/plain", e.target.innerText);
         }
     } 
 
@@ -52,7 +54,7 @@ class Index  extends React.Component {
         if (e.preventDefault) {
             e.preventDefault()
         }
-        console.log(e.target)
+
         if (this.idOfCol !== col && (e.target.className.includes('header') || e.target.className.includes('trello__wrapper'))) {
             let cloneColumnsOrder = this.state.columnOrder
             const dragCol = cloneColumnsOrder.findIndex(item => item === this.idOfCol);
@@ -73,16 +75,30 @@ class Index  extends React.Component {
         e.target.style.opacity = '1'
     }
 
-    dragTaskStart = (e) => {
-        console.log( "start" );
+    dragTaskStart = (ev,idCol,idTask) => {
+        if (ev.target.className.includes('trello__task')) {
+            this.idOfTask = idTask;
+            this.idOfCol = idCol;
+            ev.dataTransfer.setData("text/plain", ev.target.innerText);
+        } 
     }
 
-    dragTaskEnter = (e) => {
-        console.log( "enter" );
+    dragTaskEnter = (ev,idCol,idTask) => {
+        if (ev.preventDefault) {
+            ev.preventDefault()
+        }
+
+        if (this.idOfCol === idCol) {
+            if (this.idOfTask !== idTask) {
+                console.log("różne")
+            }
+        } 
+
+        return false
     }
 
-    dragTaskEnd = (e) => {
-        console.log( "end" );
+    dragTaskEnd = (ev) => {
+        // console.log(ev);
     }
 
     render() {
@@ -97,8 +113,8 @@ class Index  extends React.Component {
                     onDragStart={(e,col) => this.onDragStart(e,col)}
                     onDragEnter={(e,col) => this.onDragEnter(e,col)}
                     dragEnd={this.dragEnd}
-                    dragTaskStart={() => this.dragTaskStart()} 
-                    dragTaskEnter={() => this.dragTaskEnter()}
+                    dragTaskStart={(e,idColumn,idTask) => this.dragTaskStart(e,idColumn,idTask)} 
+                    dragTaskEnter={(e,idColumn,idTask) => this.dragTaskEnter(e,idColumn,idTask)}
                     dragTaskEnd={() => this.dragTaskEnd()}
                     newTask={(e,idCol) => this.handleClickNewTask(e,idCol)} />
         })
