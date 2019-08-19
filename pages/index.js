@@ -9,6 +9,7 @@ class Index  extends React.Component {
     idOfCol = null;
     idOfTask = null;
     oldCol = null;
+    newCol = null;
    
     handleClickNewTask = (e, idCol) => {
         e.preventDefault();
@@ -65,8 +66,7 @@ class Index  extends React.Component {
             
             this.setState({
                 columnOrder: cloneColumnsOrder
-            })
-            
+            })  
         }
     }
 
@@ -90,7 +90,6 @@ class Index  extends React.Component {
 
         if (this.idOfCol === idCol) {
             if (this.idOfTask !== idTask && this.oldCol !== idCol) {
-                
                 const column = this.state.columns.find(col => col.id === idCol)
 
                 if (column.tasksIds.length > 0) {
@@ -99,28 +98,28 @@ class Index  extends React.Component {
                    
                     column.tasksIds.splice(oldPlace, 1)
                     column.tasksIds.splice(newPlace, 0, this.idOfTask)
-
+        
                     const newTaskList = {
                         id: column.id,
                         title: column.title,
-                        tasksIds: column.tasksIds,
+                        tasksIds: column.tasksIds
                     }
-
+        
                     this.setState({
                         columns: this.state.columns.map(item => item.id === column.id ? newTaskList : item)
                     })
+                    
                     return
                 }
             }
-        } else {
-            
-            if (this.idOfCol !== idCol) {
+        } else if (this.idOfCol !== idCol) {
                 
                 let column = this.state.columns.find(item => item.id === idCol);
                 const taskItem = column.tasksIds.some(item => item === this.idOfTask);
                 
                 if (!taskItem) {
                     this.oldCol = this.idOfCol
+                    this.newCol = idCol
                     const newTask = column.tasksIds.findIndex(item => item === idTask)
                     column.tasksIds.splice(newTask, 0, this.idOfTask)
                     
@@ -150,40 +149,15 @@ class Index  extends React.Component {
                     })
                 }
 
-                else {
-                    
-                    if (this.idOfCol !== idCol) {
-                        const column = this.state.columns.find(col => col.id === idCol)
-        
-                        if (column.tasksIds.length > 0) {
-                            const oldPlace = column.tasksIds.findIndex(item => item === this.idOfTask)
-                            const newPlace = column.tasksIds.findIndex(item => item === idTask)
-                        
-                            column.tasksIds.splice(oldPlace, 1)
-                            column.tasksIds.splice(newPlace, 0, this.idOfTask)
-        
-                            const newTaskList = {
-                                id: column.id,
-                                title: column.title,
-                                tasksIds: column.tasksIds,
-                            }
-        
-                            this.setState({
-                                columns: this.state.columns.map(item => item.id === column.id ? newTaskList : item)
-                            })
-                            return
-                        }
-                    }
-                }
+                this.idOfCol = idCol
             }
-    
-        }
 
         return false
     }
 
     dragTaskEnd = (ev) => {
-        // console.log(ev);
+        this.oldCol=null;
+        this.newCol=null;
     }
 
     render() {
