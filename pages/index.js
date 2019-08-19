@@ -32,7 +32,7 @@ class Index  extends React.Component {
         })
     }
 
-    onDragStart = (e,col) => {
+    onDragStart = col => e => {
         
        
             if (e.target.className.includes("trello__wrapper")) {
@@ -50,7 +50,7 @@ class Index  extends React.Component {
         }
     } 
 
-    onDragEnter = (e, col) => {
+    onDragEnter = col => e => {
         if (e.preventDefault) {
             e.preventDefault()
         }
@@ -75,7 +75,8 @@ class Index  extends React.Component {
         e.target.style.opacity = '1'
     }
 
-    dragTaskStart = (ev,idCol,idTask) => {
+    dragTaskStart = (idCol,idTask) => ev => {
+       
         if (ev.target.className.includes('trello__task')) {
             this.idOfTask = idTask;
             this.idOfCol = idCol;
@@ -83,16 +84,41 @@ class Index  extends React.Component {
         } 
     }
 
-    dragTaskEnter = (ev,idCol,idTask) => {
+    dragTaskEnter = (idCol,idTask) => ev => {
         if (ev.preventDefault) {
             ev.preventDefault()
         }
 
         if (this.idOfCol === idCol) {
             if (this.idOfTask !== idTask) {
-                console.log("różne")
+                let columns = this.state.columns
+                let column = columns[idCol]
+                
+                if (column.tasksIds.length > 0) {
+                    const oldPlace = column.tasksIds.findIndex(item => item === this.idOfTask)
+                    const newPlace = column.tasksIds.findIndex(item => item === idTask)
+                  
+                    column.tasksIds.splice(oldPlace, 1)
+                    column.tasksIds.splice(newPlace, 0, this.idOfTask)
+
+                    const newTaskList = {
+                        id: column.id,
+                        title: column.title,
+                        tasksIds: column.tasksIds,
+                    }
+
+                    this.setState({
+                        columns: {
+                            ...this.state.columns,
+                            ...newTaskList
+                        }
+                    })
+                    return
+                }
             }
-        } 
+        } else {
+            
+        }
 
         return false
     }
@@ -110,11 +136,11 @@ class Index  extends React.Component {
                     column={column} 
                     tasks={tasks} 
                     index={index}
-                    onDragStart={(e,col) => this.onDragStart(e,col)}
-                    onDragEnter={(e,col) => this.onDragEnter(e,col)}
+                    onDragStart={(col) => this.onDragStart(col)}
+                    onDragEnter={(col) => this.onDragEnter(col)}
                     dragEnd={this.dragEnd}
-                    dragTaskStart={(e,idColumn,idTask) => this.dragTaskStart(e,idColumn,idTask)} 
-                    dragTaskEnter={(e,idColumn,idTask) => this.dragTaskEnter(e,idColumn,idTask)}
+                    dragTaskStart={(idColumn,idTask) => this.dragTaskStart(idColumn,idTask)} 
+                    dragTaskEnter={(idColumn,idTask) => this.dragTaskEnter(idColumn,idTask)}
                     dragTaskEnd={() => this.dragTaskEnd()}
                     newTask={(e,idCol) => this.handleClickNewTask(e,idCol)} />
         })

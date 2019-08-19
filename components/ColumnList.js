@@ -7,8 +7,8 @@ const ColumnList = props => {
     return (    
         <div className='trello__wrapper'
              draggable='true'
-             onDragStart={(e) => props.onDragStart(e,props.column.id)}
-             onDragEnter={(e) => props.onDragEnter(e,props.column.id)}
+             onDragStart={props.onDragStart(props.column.id)}
+             onDragEnter={props.onDragEnter(props.column.id)}
              onDragEnd={props.dragEnd}
         >
             <div className='trello'>
@@ -17,8 +17,8 @@ const ColumnList = props => {
                     {props.tasks.map((task) => <Task 
                         key={task.id} 
                         task={task} 
-                        dragTaskStart={(e,idColumn,idTask) => props.dragTaskStart(e,idColumn,idTask)}
-                        dragTaskEnter={(e,idColumn,idTask) => props.dragTaskEnter(e,idColumn,idTask)}
+                        dragTaskStart={(idColumn,idTask) => props.dragTaskStart(idColumn,idTask)}
+                        dragTaskEnter={(idColumn,idTask) => props.dragTaskEnter(idColumn,idTask)}
                         dragTaskEnd={() => props.dragTaskEnd()}
                         idColumn={props.column.id}
                     />)}
