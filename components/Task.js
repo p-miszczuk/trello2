@@ -3,9 +3,11 @@ import React from 'react'
 const Task = props => {
     return (
         <div 
-            className='trello__task-wrapper' 
+            className='trello__task-wrapper'
+            onDragStart={() => props.dragTaskStart()}
+            onDragEnter={() => props.dragTaskEnter()}
+            onDragEnd={() => props.dragTaskEnd()}
             draggable='true'
-            
         >
             <a href="" className="trello__task">
             {
@@ -46,6 +48,7 @@ const Task = props => {
                     max-width: 300px;
                     min-height: 20px;
                     margin-bottom: 8px;
+                    z-index: 9999;
                 }
                 .trello__task {
                     background-color: #fff;

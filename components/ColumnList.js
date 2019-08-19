@@ -14,7 +14,13 @@ const ColumnList = props => {
             <div className='trello'>
                 <HeaderTaskList title={props.column.title} />
                 <div className="trello__list-tasks">
-                    {props.tasks.map((task, index) => <Task key={task.id} task={task} index={index}/>)}
+                    {props.tasks.map((task, index) => <Task 
+                        key={task.id} 
+                        task={task} 
+                        dragTaskStart={() => props.dragTaskStart()} 
+                        dragTaskEnter={() => props.dragTaskEnter()}
+                        dragTaskEnd={() => props.dragTaskEnd()}
+                    />)}
                 </div>
                 <NewTaskCreator idCol={props.column.id} newTask={(e,idCol) => props.newTask(e, idCol)} />
             </div>

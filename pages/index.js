@@ -32,19 +32,28 @@ class Index  extends React.Component {
     }
 
     onDragStart = (e,col) => {
-        e.target.style.opacity = '0'
-        this.idOfCol = col;
-        this.clone = document.getElementById('clone')
-        this.clone.innerHTML = e.target.innerHTML;
-        e.dataTransfer.setData("text/plain", e.target.innerText);
+        // if(e.target.className === 'trello__wrapper') {
+            if (e.target.className.includes("trello__wrapper")) {
+            e.target.style.opacity = '1'
+            this.idOfCol = col;
+            // this.clone = document.getElementById('clone')
+            // this.clone.innerHTML = e.currentTarget.innerHTML;
+            // this.clone.style.height = e.target.firstChild.offsetHeight + "px";
+            // this.clone.style.top = e.target.offsetTop+'px'
+            // this.clone.style.left = e.target.offsetLeft+'px'
+            // const a = e.target
+            // console.log({a})
+            console.log("drag column")
+            e.dataTransfer.setData("text/plain", e.target.innerText);
+        }
     } 
 
     onDragEnter = (e, col) => {
         if (e.preventDefault) {
             e.preventDefault()
         }
-        
-        if (this.idOfCol !== col) {
+        console.log(e.target)
+        if (this.idOfCol !== col && (e.target.className.includes('header') || e.target.className.includes('trello__wrapper'))) {
             let cloneColumnsOrder = this.state.columnOrder
             const dragCol = cloneColumnsOrder.findIndex(item => item === this.idOfCol);
             const newPlace = cloneColumnsOrder.findIndex(item => item === col);
@@ -64,6 +73,18 @@ class Index  extends React.Component {
         e.target.style.opacity = '1'
     }
 
+    dragTaskStart = (e) => {
+        console.log( "start" );
+    }
+
+    dragTaskEnter = (e) => {
+        console.log( "enter" );
+    }
+
+    dragTaskEnd = (e) => {
+        console.log( "end" );
+    }
+
     render() {
         const data = this.state.columnOrder.map((colId, index) => {
             const column = this.state.columns[colId];
@@ -76,6 +97,9 @@ class Index  extends React.Component {
                     onDragStart={(e,col) => this.onDragStart(e,col)}
                     onDragEnter={(e,col) => this.onDragEnter(e,col)}
                     dragEnd={this.dragEnd}
+                    dragTaskStart={() => this.dragTaskStart()} 
+                    dragTaskEnter={() => this.dragTaskEnter()}
+                    dragTaskEnd={() => this.dragTaskEnd()}
                     newTask={(e,idCol) => this.handleClickNewTask(e,idCol)} />
         })
     
@@ -95,12 +119,12 @@ class Index  extends React.Component {
                         font-family: $baseFontFamily;
                         width: 100%;
                     }
-                    #drag {
+                    #clone{
                         position: fixed;
                         left: 0px;
                         top: 0px;
+                        width: 272px;
                         background-color: red;
-                        width: 100px;
                         height: 100px;
                     }
                 `}</style>
@@ -119,7 +143,7 @@ class Index  extends React.Component {
                         width: 100%;
                     }
                 `}</style>
-                <div id='clone'>ad</div>
+                {/* <div id='clone'>ad</div> */}
             </div>
         )
     }
