@@ -1,14 +1,15 @@
 import React from 'react'
 
 const Task = props => {
-    const { idColumn, task, dragTaskEnd, dragTaskEnter, dragTaskStart } = props
+    const { idColumn, task, onDragEnd, onDragEnter, onDragStart } = props
+   console.log(task.id)
     return (
         <div 
             className='trello__task-wrapper'
             draggable='true'
-            onDragStart={dragTaskStart(idColumn,task.id)}
-            onDragEnter={dragTaskEnter(idColumn,task.id)}
-            onDragEnd={dragTaskEnd}
+            onDragStart={onDragStart(idColumn,task.id)}
+            onDragEnter={onDragEnter(idColumn,task.id)}
+            onDragEnd={onDragEnd}
         >
             <a href="" className="trello__task">
             {

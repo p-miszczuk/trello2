@@ -5,6 +5,7 @@ import HeaderTaskList from './HeaderTaskList'
 
 const ColumnList = props => {
     const { id, tasks, title, onDragStart, onDragEnter } = props
+    
     return (    
         <div className='trello__wrapper'
              draggable='true'
@@ -15,14 +16,14 @@ const ColumnList = props => {
                 <HeaderTaskList title={title} />
                 <div className="trello__list-tasks" /*onDragEnter={dragEmptyListEnter(id)}*/>
                     { 
-                        // tasks.map((task) => <Task 
-                        // key={task.id} 
-                        // task={task} 
-                        // dragTaskStart={(idColumn,idTask) => props.dragTaskStart(idColumn,idTask)}
-                        // dragTaskEnter={(idColumn,idTask) => props.dragTaskEnter(idColumn,idTask)}
-                        // dragTaskEnd={() => dragTaskEnd()}
-                        // idColumn={column.id}
-                        // />)
+                        tasks.map((task) => <Task 
+                            key={task.id} 
+                            task={task} 
+                            onDragStart={(idColumn,idTask) => onDragStart(idColumn,idTask)}
+                            onDragEnter={(idColumn,idTask) => onDragEnter(idColumn,idTask)}
+                            onDragEnd={() => onDragEnd()}
+                            idColumn={id}
+                        />)
                     } 
                 </div>
                 <NewTaskCreator />

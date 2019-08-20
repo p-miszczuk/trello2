@@ -12,17 +12,18 @@ class Index  extends React.Component {
         ...inicialData
     };
    
-    onDragStart = col => e => {
-        console.log("here")            
+    onDragStart = (col, idTask) => e => {   
+        console.log(idTask)       
         if (e.target.className.includes("trello__wrapper")) {
             this.setState({
                 idOfCol: col,
                 type: 'column'
             })
-        } else if (ev.target.className.includes('trello__task')) {
+        } else if (e.target.className.includes('trello__task')) {
+            console.log(col, idTask)
             this.setState({
                 idOfTask: idTask,
-                idOfCol: idCol,
+                idOfCol: col,
                 type: 'task'
             })
         }
@@ -32,26 +33,30 @@ class Index  extends React.Component {
         if (e.preventDefault) {
             e.preventDefault()
         }
-
-        const { idOfCol, columnOrder, type } = this.state
+        
+        const { idOfCol, columns, type } = this.state
 
         if (type === 'column') {
-            let cloneColumnsOrder = columnOrder
-
-            const oldPlace = cloneColumnsOrder.findIndex(item => item === idOfCol);
-            const newPlace = cloneColumnsOrder.findIndex(item => item === col);
-           
-            cloneColumnsOrder.splice(oldPlace,1)
-            cloneColumnsOrder.splice(newPlace, 0, idOfCol)
+            let _columns = columns
+            const moveTask = _columns.find(item => item.id === idOfCol)
+            const oldPlace = _columns.findIndex(item => item.id === idOfCol)
+            const newPlace = _columns.findIndex(item => item.id === col)
             
-            this.setState({
-                columnOrder: cloneColumnsOrder
-            })  
+            if (oldPlace !== newPlace) {
+                _columns.splice(oldPlace, 1)
+                _columns.splice(newPlace, 0, moveTask)
+                
+                this.setState({
+                    columns: _columns
+                })
+            } 
+            
+            return
         }
     }
 
     onDragEnd = () => {
-
+        if (type === 'column') this.setState({idOfCol: null})
     }
 
     dragTaskEnter = (idCol,idTask) => ev => {
@@ -167,7 +172,7 @@ class Index  extends React.Component {
     }
 
     render() {
-        const { columns } = this.state
+        const { columns, tasks } = this.state
         
         return (
             <div className="container">
@@ -175,7 +180,7 @@ class Index  extends React.Component {
                                         key={column.id}
                                         id={column.id}
                                         title={column.title}
-                                        tasks={column.tasksIds}
+                                        tasks={tasks.filter(item => column.tasksIds.find(task => task === item.id))}
                                         onDragStart={(id) => this.onDragStart(id)}
                                         onDragEnter={(id) => this.onDragEnter(id)}
                                         onDragEnd={this.onDragEnd}
