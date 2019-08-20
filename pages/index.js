@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 import ColumnList from '../components/ColumnList'
 import inicialData from '../static/data'
 
@@ -117,19 +117,11 @@ class Index  extends React.Component {
 
                     return
                 }
-        } 
+            } 
+        }
 
+        return false
     }
-
-    return false
-}
-
-dragTaskEnd = (ev) => {
-    this.setState({
-        oldCol: null
-    })
-}
-
 
     onDragEnd = () => {
         if (this.state.type === 'column') this.setState({idOfCol: null})
