@@ -53,113 +53,86 @@ class Index  extends React.Component {
             return
         } else if (type === 'task' && idTask !== undefined) {
           
-            if (idOfCol === col) {
+            if (idOfCol === col && idTask !== -1) {
+             
                 if (idOfTask !== idTask && oldCol !== col) {
-                   
-                    const _columnTask = columns.find(column => column.id === idOfCol)
                   
-                    const oldPlace = _columnTask.tasksIds.findIndex(item => item === idOfTask)
-                    const newPlace = _columnTask.tasksIds.findIndex(item => item === idTask)
+                    const _columnTask = columns.find(column => column.id === idOfCol)
+                    const _task = _columnTask.tasksIds.find(task => task.id === idOfTask)
+                   
+                    const oldPlace = _columnTask.tasksIds.findIndex(item => item.id === idOfTask)
+                    const newPlace = _columnTask.tasksIds.findIndex(item => item.id === idTask)
                     
                     _columnTask.tasksIds.splice(oldPlace, 1)
-                    _columnTask.tasksIds.splice(newPlace, 0, idOfTask)
+                    _columnTask.tasksIds.splice(newPlace, 0, _task)
                    
                     const newTaskList = {
                         id: _columnTask.id,
                         title: _columnTask.title,
                         tasksIds: _columnTask.tasksIds
                     }
-
-                    console.log(newTaskList)
                     
                     this.setState({
                         columns: columns.map(item => item.id === idOfCol ? newTaskList : item)
                     })
     
                 }
-            }
-        }
-    }
+            } else if (idOfCol !== col) {
+                
+                let column = columns.find(item => item.id === col)
+                const isTask = column.tasksIds.some(item => item === idOfTask);
+               
+                if (!isTask) {
+                     
+                    let oldColumn = columns.find(item => item.id === idOfCol)
+                    const _task = oldColumn.tasksIds.find(task => task.id === idOfTask)
+                    const oldTask = oldColumn.tasksIds.findIndex(item => item.id === idOfTask)
 
-    onDragEnd = () => {
-        if (this.state.type === 'column') this.setState({idOfCol: null})
-    }
+                    const newTask = column.tasksIds.findIndex(item => item.id === idTask)
+                    column.tasksIds.splice(newTask, 0, _task)
+                   
+                    oldColumn.tasksIds.splice(oldTask,1)
 
-    dragTaskEnter = (idCol,idTask) => ev => {
-        if (ev.preventDefault) {
-            ev.preventDefault()
-        }
-    
-        const { idOfCol, idOfTask, oldCol, type } = this.state
-
-        if (type === 'task') {
-          
-            if (idOfCol === idCol) {
-      
-                if (idOfTask !== idTask && oldCol !== idCol) {
-                    
-                    const column = this.state.columns.find(col => col.id === idCol)
-    
-                    const oldPlace = column.tasksIds.findIndex(item => item === idOfTask)
-                    const newPlace = column.tasksIds.findIndex(item => item === idTask)
-                    
-                    column.tasksIds.splice(oldPlace, 1)
-                    column.tasksIds.splice(newPlace, 0, idOfTask)
-        
                     const newTaskList = {
                         id: column.id,
                         title: column.title,
                         tasksIds: column.tasksIds
                     }
-        
-                    this.setState({
-                        columns: this.state.columns.map(item => item.id === column.id ? newTaskList : item)
-                    })
-                    
-                    return
-    
-                }
-            } else if (idOfCol !== idCol) {
-                   
-                    let column = this.state.columns.find(item => item.id === idCol);
-                    const taskItem = column.tasksIds.some(item => item === idOfTask);
-                    
-                    if (!taskItem) {
-                        
-                        const newTask = column.tasksIds.findIndex(item => item === idTask)
-                        column.tasksIds.splice(newTask, 0, idOfTask)
-                        
-                        let oldColumn = this.state.columns.find(item => item.id === idOfCol)
-                        const oldTask = oldColumn.tasksIds.findIndex(item => item === idOfTask)
-                       
-                        oldColumn.tasksIds.splice(oldTask,1)
-    
-                        const newTaskList = {
-                            id: column.id,
-                            title: column.title,
-                            tasksIds: column.tasksIds
-                        }
-    
-                        const oldTaskList = {
-                            id: oldColumn.id,
-                            title: oldColumn.title,
-                            tasksIds: oldColumn.tasksIds
-                        } 
-    
-                        this.setState({
-                            columns: this.state.columns.map(item => {
-                                if (item.id === column.id) return newTaskList
-                                else if (item.id === oldColumn.id) return oldTaskList
-                                return item
-                            }),
-                            oldCol: idOfCol,
-                            idOfCol: idCol
-                        })
-                    }
-            }
-        }
 
-        return false
+                    const oldTaskList = {
+                        id: oldColumn.id,
+                        title: oldColumn.title,
+                        tasksIds: oldColumn.tasksIds
+                    } 
+
+                    this.setState({
+                        columns: this.state.columns.map(item => {
+                            if (item.id === column.id) return newTaskList
+                            else if (item.id === oldColumn.id) return oldTaskList
+                            return item
+                        }),
+                        oldCol: idOfCol,
+                        idOfCol: col
+                    })
+
+                    return
+                }
+        } 
+
+    }
+
+    return false
+}
+
+dragTaskEnd = (ev) => {
+    this.setState({
+        oldCol: null
+    })
+}
+
+
+    onDragEnd = () => {
+        if (this.state.type === 'column') this.setState({idOfCol: null})
     }
 
     dragTaskEnd = (ev) => {
@@ -201,24 +174,17 @@ class Index  extends React.Component {
         const { columns, tasks } = this.state
         return (
             <div className="container">
-                {columns.map(column => {
-                    let _tasks = []
-                    column.tasksIds.map(task => tasks.map(taskItem => {
-                            if (taskItem.id === task) _tasks.push(taskItem)
-                        })
-                    )
-                    return (
-                        <ColumnList 
+                {columns.map(column => <ColumnList 
                             key={column.id}
                             id={column.id}
                             title={column.title}
-                            tasks={_tasks}
+                            tasks={column.tasksIds}
                             onDragStart={(id,idTask) => this.onDragStart(id,idTask)}
                             onDragEnter={(id,idTask) => this.onDragEnter(id,idTask)}
                             onDragEnd={this.onDragEnd}
                             />
                     )
-                })}
+                }
                 
                 <style global jsx>{`
                     * {
