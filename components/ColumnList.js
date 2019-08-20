@@ -20,9 +20,9 @@ const ColumnList = props => {
             <Task
               key={index}
               task={task}
-              onDragStart={(idColumn, idTask) => onDragStart(idColumn, idTask)}
-              onDragEnter={(idColumn, idTask) => onDragEnter(idColumn, idTask)}
-              onDragEnd={() => onDragEnd()}
+              onDragStart={onDragStart}
+              onDragEnter={onDragEnter}
+              onDragEnd={onDragEnd}
               idColumn={id}
             />
           ))}
