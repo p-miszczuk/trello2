@@ -4,37 +4,26 @@ import inicialData from '../static/data'
 
 class Index  extends React.Component {
     
-    state = inicialData;
+    state = {
+        idOfCol: null,
+        idOfTask: null,
+        oldCol: null,
+        typ: null,
+        ...inicialData
+    };
    
-    handleClickNewTask = (e, idCol) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // const ids = Object.entries(this.state.tasks)
-        // const lastTask = ids[ids.length-1][0]
-        // const idNumber = Number(lastTask.substr(4,lastTask.length))
-        
-        // let setNewTaskId = `task${idNumber+1}`
-        // const newTask = {[setNewTaskId]: {id: setNewTaskId, content: setNewTaskId, checkList: "1/2", date:  Math.random()<0.5 ? "12 sier" : false, label1: Math.random()<0.5 ? true : false, label2: Math.random()<0.4 ? true : false, desc: Math.random()<0.4 ? true : false}}
-       
-        // const columns = this.state.columns[idCol]
-        
-        // this.setState({
-        //     tasks: {...this.state.tasks, ...newTask},
-        //     columns: {
-        //         ...this.state.columns,
-        //         ...columns.tasksIds.push(setNewTaskId)
-        //     }
-        // })
-    }
-
     onDragStart = col => e => {
-            
-            if (e.target.className.includes("trello__wrapper")) {
-            e.target.style.opacity = '1'
+        console.log("here")            
+        if (e.target.className.includes("trello__wrapper")) {
             this.setState({
                 idOfCol: col,
                 type: 'column'
+            })
+        } else if (ev.target.className.includes('trello__task')) {
+            this.setState({
+                idOfTask: idTask,
+                idOfCol: idCol,
+                type: 'task'
             })
         }
     } 
@@ -61,20 +50,8 @@ class Index  extends React.Component {
         }
     }
 
-    dragEnd = e => {
-        e.target.style.opacity = '1'
-    }
+    onDragEnd = () => {
 
-    dragTaskStart = (idCol,idTask) => ev => {
-       
-        if (ev.target.className.includes('trello__task')) {
-            this.setState({
-                idOfTask: idTask,
-                idOfCol: idCol,
-                type: 'task'
-            })
-            ev.dataTransfer.setData("text/plain", ev.target.innerText);
-        } 
     }
 
     dragTaskEnter = (idCol,idTask) => ev => {
@@ -190,36 +167,19 @@ class Index  extends React.Component {
     }
 
     render() {
-        const data = this.state.columnOrder.map((colId, index) => {
-   
-            let taskArr = [];
-            const column = this.state.columns.find(item => item.id === colId);
-            const tasks = this.state.tasks;
-            column.tasksIds.forEach((item) => {  
-                tasks.forEach((id) => {
-                    if (item === id.id) {
-                       taskArr.push(id)
-                    }
-                })
-            })
-         
-            return <ColumnList 
-                    key={index} 
-                    column={column} 
-                    tasks={taskArr} 
-                    index={index}
-                    onDragStart={(col) => this.onDragStart(col)}
-                    onDragEnter={(col) => this.onDragEnter(col)}
-                    dragEmptyListEnter={(idCol) => this.dragEmptyListEnter(idCol)}
-                    dragEnd={this.dragEnd}
-                    dragTaskStart={(idColumn,idTask) => this.dragTaskStart(idColumn,idTask)} 
-                    dragTaskEnter={(idColumn,idTask) => this.dragTaskEnter(idColumn,idTask)}
-                    dragTaskEnd={() => this.dragTaskEnd()}
-                    newTask={(e,idCol) => this.handleClickNewTask(e,idCol)} />
-        })
+        const { columns } = this.state
+        
         return (
             <div className="container">
-                {data}
+                {columns.map(column => <ColumnList 
+                                        key={column.id}
+                                        id={column.id}
+                                        title={column.title}
+                                        tasks={column.tasksIds}
+                                        onDragStart={(id) => this.onDragStart(id)}
+                                        onDragEnter={(id) => this.onDragEnter(id)}
+                                        onDragEnd={this.onDragEnd}
+                                        />)}
                 
                 <style global jsx>{`
                     * {

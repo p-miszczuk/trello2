@@ -1,8 +1,4 @@
 const initialData = {
-    idOfCol: null,
-    idOfTask: null,
-    oldCol: null,
-    typ: null,
     tasks: [
         {id: 'task1', content: 'Task 1', checkList: "1/1", date: '14 cze', label1: true, label2: false, desc: false},
         {id: 'task2', content: 'Task 2', checkList: "", date: '12 maj', label1: false, label2: false, desc: false},  
@@ -26,8 +22,7 @@ const initialData = {
             title: 'List Tasks 3',
             tasksIds: []
         }
-    ],
-    columnOrder: ['column1','column2','column3'],
+    ]
 }
 
 export default initialData;

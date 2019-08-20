@@ -4,27 +4,28 @@ import NewTaskCreator from './NewTaskCreator'
 import HeaderTaskList from './HeaderTaskList'
 
 const ColumnList = props => {
+    const { id, tasks, title, onDragStart, onDragEnter } = props
     return (    
         <div className='trello__wrapper'
              draggable='true'
-             onDragStart={props.onDragStart(props.column.id)}
-             onDragEnter={props.onDragEnter(props.column.id)}
-             onDragEnd={props.dragEnd}
+             onDragStart={onDragStart(id)}
+             onDragEnter={onDragEnter(id)}
         >
             <div className='trello'>
-                <HeaderTaskList title={props.column.title} />
-                <div className="trello__list-tasks" onDragEnter={props.dragEmptyListEnter(props.column.id)}>
+                <HeaderTaskList title={title} />
+                <div className="trello__list-tasks" /*onDragEnter={dragEmptyListEnter(id)}*/>
                     { 
-                        props.tasks.map((task) => <Task 
-                        key={task.id} 
-                        task={task} 
-                        dragTaskStart={(idColumn,idTask) => props.dragTaskStart(idColumn,idTask)}
-                        dragTaskEnter={(idColumn,idTask) => props.dragTaskEnter(idColumn,idTask)}
-                        dragTaskEnd={() => props.dragTaskEnd()}
-                        idColumn={props.column.id}
-                    />)} 
-                    </div>
-                <NewTaskCreator idCol={props.column.id} newTask={(e,idCol) => props.newTask(e, idCol)} />
+                        // tasks.map((task) => <Task 
+                        // key={task.id} 
+                        // task={task} 
+                        // dragTaskStart={(idColumn,idTask) => props.dragTaskStart(idColumn,idTask)}
+                        // dragTaskEnter={(idColumn,idTask) => props.dragTaskEnter(idColumn,idTask)}
+                        // dragTaskEnd={() => dragTaskEnd()}
+                        // idColumn={column.id}
+                        // />)
+                    } 
+                </div>
+                <NewTaskCreator />
             </div>
             <style jsx>{`
                 .trello__wrapper {

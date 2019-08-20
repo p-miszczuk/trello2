@@ -1,38 +1,39 @@
 import React from 'react'
 
 const Task = props => {
+    const { idColumn, task, dragTaskEnd, dragTaskEnter, dragTaskStart } = props
     return (
         <div 
             className='trello__task-wrapper'
             draggable='true'
-            onDragStart={props.dragTaskStart(props.idColumn,props.task.id)}
-            onDragEnter={props.dragTaskEnter(props.idColumn,props.task.id)}
-            onDragEnd={props.dragTaskEnd}
+            onDragStart={dragTaskStart(idColumn,task.id)}
+            onDragEnter={dragTaskEnter(idColumn,task.id)}
+            onDragEnd={dragTaskEnd}
         >
             <a href="" className="trello__task">
             {
-                (props.task.label1 || props.task.label2) && <div className="trello__card-labels">
-                    {props.task.label1 && <span className="trello__card-label trello__card-label--orange"></span>}
-                    {props.task.label2 && <span className="trello__card-label trello__card-label--violet"></span>}
+                (task.label1 || task.label2) && <div className="trello__card-labels">
+                    {task.label1 && <span className="trello__card-label trello__card-label--orange"></span>}
+                    {task.label2 && <span className="trello__card-label trello__card-label--violet"></span>}
                 </div>
             }
-            <span>{props.task.content}</span>
+            <span>{task.content}</span>
             <img src="../static/images/pencil.png" className='trello__pencil' />
             <div className="trello__badges">
                 {
-                    props.task.checkList && <div className="trello__badge-checklist" title="Elementy listy zadań">
+                    task.checkList && <div className="trello__badge-checklist" title="Elementy listy zadań">
                         <img src='../static/images/check.png' className="trello__icon-check" />
-                        <span className="trello__info-check"> {props.task.checkList} </span>
+                        <span className="trello__info-check"> {task.checkList} </span>
                     </div>
                 }
                 {
-                    props.task.date && <div className="trello__badge-date" title="">
+                    task.date && <div className="trello__badge-date" title="">
                         <img src="../static/images/clock.png" className="trello__icon-clock" />
-                        <span className="trello__info-date">{props.task.date}</span>
+                        <span className="trello__info-date">{task.date}</span>
                     </div>
                 }
                 {
-                    props.task.desc && <div className="trello__badge-description" title="Ta karta ma opis.">
+                    task.desc && <div className="trello__badge-description" title="Ta karta ma opis.">
                         <span />
                         <span />
                         <span />
