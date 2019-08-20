@@ -4,10 +4,10 @@ const Task = props => {
     return (
         <div 
             className='trello__task-wrapper'
+            draggable='true'
             onDragStart={props.dragTaskStart(props.idColumn,props.task.id)}
             onDragEnter={props.dragTaskEnter(props.idColumn,props.task.id)}
-            onDragEnd={() => props.dragTaskEnd()}
-            draggable='true'
+            onDragEnd={props.dragTaskEnd}
         >
             <a href="" className="trello__task">
             {
@@ -18,7 +18,6 @@ const Task = props => {
             }
             <span>{props.task.content}</span>
             <img src="../static/images/pencil.png" className='trello__pencil' />
-            <span className="icon-pencil"></span>
             <div className="trello__badges">
                 {
                     props.task.checkList && <div className="trello__badge-checklist" title="Elementy listy zadań">
@@ -48,7 +47,7 @@ const Task = props => {
                     max-width: 300px;
                     min-height: 20px;
                     margin-bottom: 8px;
-                    z-index: 9999;
+                    z-index: 999;
                 }
                 .trello__task {
                     background-color: #fff;
@@ -62,6 +61,8 @@ const Task = props => {
                     overflow: hidden;
                     padding: 6px 8px 2px;
                     color: black;
+                    z-index: 0;
+                    pointer-events: none;
                 }
                 .trello__task:focus {
                     color: black;
@@ -79,7 +80,6 @@ const Task = props => {
                     right: 4px;
                     display: block;
                     line-height: 10px;
-                    z-index: 9;
                     opacity: 0;
                     color: #42526e;
                     transition: opacity 0.2s;
@@ -163,7 +163,6 @@ const Task = props => {
                     width: 40px;
                     height: 8px;
                     border-radius: 6px;
-                    z-index: 10;
                 }
                 .trello__card-label--orange {
                     background: #ff9f1a;

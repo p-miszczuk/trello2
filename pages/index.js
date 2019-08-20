@@ -233,19 +233,11 @@ class Index  extends React.Component {
                         font-family: $baseFontFamily;
                         width: 100%;
                     }
-                    #clone{
-                        position: fixed;
-                        left: 0px;
-                        top: 0px;
-                        width: 272px;
-                        background-color: red;
-                        height: 100px;
-                    }
                 `}</style>
                 <style jsx>{`
                     .container {
-                        display: inline-block;
                         user-select: none;
+                        white-space: nowrap;
                         overflow-x: auto;
                         overflow-y: hidden;
                         padding: 30px 8px;
@@ -254,15 +246,12 @@ class Index  extends React.Component {
                         right: 0;
                         bottom: 0;
                         left: 0;
-                        width: 100%;
                     }
                 `}</style>
                
             </div>
         )
     }
-    
-    
 }
 
 export default Index;
