@@ -2,7 +2,7 @@ import React from 'react'
 
 const Task = props => {
     const { idColumn, task, onDragEnd, onDragEnter, onDragStart } = props
-   console.log(task.id)
+
     return (
         <div 
             className='trello__task-wrapper'

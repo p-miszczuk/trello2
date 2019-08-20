@@ -13,14 +13,13 @@ class Index  extends React.Component {
     };
    
     onDragStart = (col, idTask) => e => {   
-        console.log(idTask)       
+
         if (e.target.className.includes("trello__wrapper")) {
             this.setState({
                 idOfCol: col,
                 type: 'column'
             })
-        } else if (e.target.className.includes('trello__task')) {
-            console.log(col, idTask)
+        } else if (e.target.className.includes('trello__task') && idTask !== undefined) {
             this.setState({
                 idOfTask: idTask,
                 idOfCol: col,
@@ -29,13 +28,13 @@ class Index  extends React.Component {
         }
     } 
 
-    onDragEnter = col => e => {
+    onDragEnter = (col, idTask) => e => {
         if (e.preventDefault) {
             e.preventDefault()
         }
+    
+        const { idOfCol, idOfTask, oldCol, columns, type } = this.state
         
-        const { idOfCol, columns, type } = this.state
-
         if (type === 'column') {
             let _columns = columns
             const moveTask = _columns.find(item => item.id === idOfCol)
@@ -52,11 +51,38 @@ class Index  extends React.Component {
             } 
             
             return
+        } else if (type === 'task' && idTask !== undefined) {
+          
+            if (idOfCol === col) {
+                if (idOfTask !== idTask && oldCol !== col) {
+                   
+                    const _columnTask = columns.find(column => column.id === idOfCol)
+                  
+                    const oldPlace = _columnTask.tasksIds.findIndex(item => item === idOfTask)
+                    const newPlace = _columnTask.tasksIds.findIndex(item => item === idTask)
+                    
+                    _columnTask.tasksIds.splice(oldPlace, 1)
+                    _columnTask.tasksIds.splice(newPlace, 0, idOfTask)
+                   
+                    const newTaskList = {
+                        id: _columnTask.id,
+                        title: _columnTask.title,
+                        tasksIds: _columnTask.tasksIds
+                    }
+
+                    console.log(newTaskList)
+                    
+                    this.setState({
+                        columns: columns.map(item => item.id === idOfCol ? newTaskList : item)
+                    })
+    
+                }
+            }
         }
     }
 
     onDragEnd = () => {
-        if (type === 'column') this.setState({idOfCol: null})
+        if (this.state.type === 'column') this.setState({idOfCol: null})
     }
 
     dragTaskEnter = (idCol,idTask) => ev => {
@@ -173,18 +199,26 @@ class Index  extends React.Component {
 
     render() {
         const { columns, tasks } = this.state
-        
         return (
             <div className="container">
-                {columns.map(column => <ColumnList 
-                                        key={column.id}
-                                        id={column.id}
-                                        title={column.title}
-                                        tasks={tasks.filter(item => column.tasksIds.find(task => task === item.id))}
-                                        onDragStart={(id) => this.onDragStart(id)}
-                                        onDragEnter={(id) => this.onDragEnter(id)}
-                                        onDragEnd={this.onDragEnd}
-                                        />)}
+                {columns.map(column => {
+                    let _tasks = []
+                    column.tasksIds.map(task => tasks.map(taskItem => {
+                            if (taskItem.id === task) _tasks.push(taskItem)
+                        })
+                    )
+                    return (
+                        <ColumnList 
+                            key={column.id}
+                            id={column.id}
+                            title={column.title}
+                            tasks={_tasks}
+                            onDragStart={(id,idTask) => this.onDragStart(id,idTask)}
+                            onDragEnter={(id,idTask) => this.onDragEnter(id,idTask)}
+                            onDragEnd={this.onDragEnd}
+                            />
+                    )
+                })}
                 
                 <style global jsx>{`
                     * {
