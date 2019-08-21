@@ -78,8 +78,6 @@ class Index extends React.Component {
         columns
       })
     }
-
-    return
   }
 
   changeTasksOrderInColumn = (columns, idOfCol, idOfTask, idTask) => {
@@ -97,13 +95,13 @@ class Index extends React.Component {
     const newTaskList = {
       id: _columnTask.id,
       title: _columnTask.title,
-      tasksIds: _columnTask.tasksIds,
+      tasksIds: [..._columnTask.tasksIds],
     }
 
     const newColumns = columns.map(item => (item.id === idOfCol ? newTaskList : item))
 
     this.setState({
-      columns: [...columns]
+      columns: [...newColumns]
     })
   }
 
@@ -144,8 +142,6 @@ class Index extends React.Component {
         oldCol: idOfCol,
         idOfCol: col,
       })
-      
-      return
     }
   }
 
